@@ -1,0 +1,35 @@
+## A Heat environment file which can be used to set up storage
+## backends.
+
+resource_registry:
+  OS::TripleO::ControllerExtraConfigPre: /home/stack/templates/flexpod-allcontrollers-pre.yaml
+  
+parameter_defaults:
+  #### BACKEND SELECTION ####
+  ## Whether to enable iscsi backend for Cinder.
+  CinderEnableIscsiBackend: false
+  ## Whether to enable rbd (Ceph) backend for Cinder.
+  CinderEnableRbdBackend: false
+  ## Whether to enable NFS backend for Cinder.
+  # CinderEnableNfsBackend: false
+  ## Whether to enable rbd (Ceph) backend for Nova ephemeral storage.
+  NovaEnableRbdBackend: false
+  SwiftMountCheck: true
+  SwiftRawDisks: {"sdb":{}}
+  SwiftUseLocalDir: false
+  SolidFireSVIP: 192.168.89.30
+  SwiftSolidFireLuns: 1
+   ## Enables SolidFire backend
+  ExtraConfig:
+      cinder::config::cinder_config:
+          solidfire/volume_driver:
+              value: cinder.volume.drivers.solidfire.SolidFireDriver
+          solidfire/san_ip:
+              value: 192.168.166.30
+          solidfire/san_login:
+              value: admin
+          solidfire/san_password:
+              value: H1ghV0lt
+          solidfire/sf_svip:
+              value: 10.1.40.100:3260
+      cinder_user_enabled_backends: ['solidfire']

@@ -1,0 +1,49 @@
+heat_template_version: 2014-10-16
+description: Configure NetApp E-Series on controller nodes using ibft0/1 interfaces for Swift
+
+parameters:
+  server:
+    description: ID of the controller node to apply this config to
+    type: string
+  SolidFireSVIP:
+    description: The MVIP for the SolidFire Array
+    type: string
+  SwiftSolidFireLuns:
+    description: Number of SolidFire LUNs to be used for Swift
+    type: string
+
+resources:
+   SwiftNetAppSFConfig:
+     type: OS::Heat::SoftwareConfig
+     properties:
+       group: script
+       config:
+         str_replace:
+           template: |
+             #!/bin/bash
+             # Correct the default initiator name
+             # so the controller can login into SolidFire LUN
+             printf "InitiatorName="$(< /sys/firmware/ibft/initiator/initiator-name)"\n" > /etc/iscsi/initiatorname.iscsi
+             /bin/systemctl reload iscsi.service
+             /bin/systemctl restart iscsid.service
+             iscsiadm --mode discovery --type sendtargets --portal=_SFSVIP_
+             iscsiadm --mode node --login 
+             mkfs.xfs /dev/sdb
+             mkdir -p /srv/node/sdb
+             echo "/dev/sdb /srv/node/sdb xfs noatime,nodiratime,nobarrier,logbufs=8 0 2" >> /etc/fstab  
+             mount /srv/node/sdb
+           params:
+             _SFSVIP_: {get_param: SolidFireSVIP}
+             _LUNS_: {get_param: SwiftSolidFireLuns}
+
+   SwiftNetAppSFDeployment:
+     type: OS::Heat::SoftwareDeployment
+     properties:
+       config: {get_resource: SwiftNetAppSFConfig}
+       server: {get_param: server }
+       actions: ['CREATE']
+
+outputs:
+  deploy_stdout:
+    description: Deployment reference
+    value: {get_attr: [SwiftNetAppSFDeployment, deploy_stdout]}

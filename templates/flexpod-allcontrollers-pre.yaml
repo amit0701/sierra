@@ -1,0 +1,20 @@
+heat_template_version: 2014-10-16
+description: Extra Pre-Deployment Config for Controller nodes before the core Puppet configuration
+
+parameters:
+  server:
+    description: ID of the node to apply this config to
+    type: string
+
+resources:
+  SwiftNetappConfig:
+    type: /home/stack/templates/netapp-extra/netapp-swift.yaml
+    properties:
+        server: {get_param: server}
+
+outputs:
+  deploy_stdout:
+    value:
+      list_join:
+      - ''
+      - - {get_attr: [SwiftNetappConfig, deploy_stdout]}
