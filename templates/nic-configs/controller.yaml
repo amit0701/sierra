@@ -37,7 +37,7 @@ parameters:
     description: Vlan ID for the tenant network traffic.
     type: number
   ExternalNetworkVlanID:
-    default: 117
+    default: 901
     description: Vlan ID for the external network traffic.
     type: number
   InternalApiNetworkVlanID:
@@ -57,7 +57,7 @@ parameters:
     description: Vlan ID for the storage mgmt network traffic.
     type: number
   ExternalInterfaceDefaultRoute:
-    default: '10.1.166.1'
+    default: '192.168.91.253'
     description: default route for texternal network
     type: string
   ControlPlaneDefaultRoute:
@@ -102,10 +102,10 @@ resources:
                 -
                   defroute: yes
                   next_hop: {get_param: ControlPlaneDefaultRoute}
-
             -
                type: interface
-               name: eno5
+               name: eno2
+
             -
                type: interface
                name: eno3
@@ -117,9 +117,6 @@ resources:
                  -
                    ip_netmask: {get_param: InternalApiIpSubnet}
                defroute: no
-#            -
-#               type: interface
-#               name: eno4
             
             -
                 type: ovs_bridge
@@ -131,16 +128,38 @@ resources:
                     name: eno4
  
             -
-               type: interface
-               name: eno2
-            -           
-               type: vlan
-               device: eno2
-               vlan_id: {get_param: ExternalNetworkVlanID}
-               addresses: 
-                 -
-                   ip_netmask: {get_param: ExternalIpSubnet}
-               defroute: no
+                type: ovs_bridge
+                name: {get_input: bridge_name}
+                use_dhcp: false
+                members:
+                  - 
+                    type: interface
+                    name: eno5
+                  - 
+                    type: vlan
+                    vlan_id: {get_param: ExternalNetworkVlanID}
+                    addresses:
+                      -
+                        ip_netmask: {get_param: ExternalIpSubnet}
+                    routes:
+                      -
+                        ip_netmask: 0.0.0.0/0
+                        next_hop: {get_param: ExternalInterfaceDefaultRoute}
+#            -
+#               type: interface
+#               name: eno5
+#            -           
+#               type: vlan
+#               device: eno5
+#               vlan_id: {get_param: ExternalNetworkVlanID}
+#               addresses: 
+#                 -
+#                   ip_netmask: {get_param: ExternalIpSubnet}
+#               routes:
+#                 - 
+#                   ip_netmask: 0.0.0.0/0
+#                   next_hop: {get_param: ExternalInterfaceDefaultRoute}
+               
             -
                type: interface
                name: eno7

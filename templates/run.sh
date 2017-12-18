@@ -7,6 +7,6 @@ openstack overcloud deploy --templates \
 --compute-scale 1 --control-scale 3  \
 --neutron-network-type vlan \
 --neutron-tunnel-type vlan \
---neutron-bridge-mappings datacentre:br-ex,physnet-tenant:br-tenant,floating:br-floating \
---neutron-network-vlan-ranges physnet-tenant:650:750,floating:160:160 \
---ntp-server 10.1.166.410.1.166.410.1.166.410.1.166.4  -t 60
+--neutron-bridge-mappings datacentre:br-ex,physnet-tenant:br-tenant\
+--neutron-network-vlan-ranges physnet-tenant:650:750 \
+--ntp-server 10.1.166.4 -t 60
