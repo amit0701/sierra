@@ -8,7 +8,7 @@ parameters:
 
 resources:
   SwiftNetappConfig:
-    type: /home/stack/templates/netapp-extra/netapp-swift.yaml
+    type: /home/stack/sierra/templates/netapp-extra/netapp-swift.yaml
     properties:
         server: {get_param: server}
 

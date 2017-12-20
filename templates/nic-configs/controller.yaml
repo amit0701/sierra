@@ -135,6 +135,7 @@ resources:
                   - 
                     type: interface
                     name: eno5
+                    primary: true
                   - 
                     type: vlan
                     vlan_id: {get_param: ExternalNetworkVlanID}

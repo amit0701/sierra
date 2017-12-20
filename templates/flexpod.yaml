@@ -2,7 +2,7 @@
 ## backends.
 
 resource_registry:
-  OS::TripleO::ControllerExtraConfigPre: /home/stack/templates/flexpod-allcontrollers-pre.yaml
+  OS::TripleO::ControllerExtraConfigPre: /home/stack/sierra/templates/flexpod-allcontrollers-pre.yaml
   
 parameter_defaults:
   #### BACKEND SELECTION ####
@@ -33,3 +33,4 @@ parameter_defaults:
           solidfire/sf_svip:
               value: 10.1.40.100:3260
       cinder_user_enabled_backends: ['solidfire']
+      #glance::api::swift_store_auth_insecure: 'true'

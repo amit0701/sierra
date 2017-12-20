@@ -6,8 +6,8 @@
 # environment files we should think about using it here to automatically
 # include network-isolation.yaml.
 resource_registry:
-  OS::TripleO::Compute::Net::SoftwareConfig: /home/stack/templates/nic-configs/compute.yaml
-  OS::TripleO::Controller::Net::SoftwareConfig: /home/stack/templates/nic-configs/controller.yaml
+  OS::TripleO::Compute::Net::SoftwareConfig: /home/stack/sierra/templates/nic-configs/compute.yaml
+  OS::TripleO::Controller::Net::SoftwareConfig: /home/stack/sierra/templates/nic-configs/controller.yaml
 
 parameter_defaults:
   InternalApiNetCidr: 10.1.30.0/24
@@ -28,11 +28,12 @@ parameter_defaults:
   InternalApiNetworkVlanID: 30
   StorageNetworkVlanID: 40
   StorageManagementVlanId: 50
-  TenantNetworkVlanID: 70
-  #NeutronBridgeMappings: "datacentre:br-ex,physnet-t"
-
+  #TenantNetworkVlanID: 70
+  NeutronNetworkType: vlan
+  NeutronTunnelTypes: ''
+  NeutronBridgeMappings: "datacentre:br-ex,physnet-tenant:br-tenant"
+  NeutronNetworkVLANRanges: "physnet-tenant:650:750,datacentre:901:902" 
   # This sets 'external_network_bridge' in l3_agent.ini to an empty string
   # so that external networks act like provider bridge networks (they
   # will plug into br-int instead of br-ex)
-#  NeutronExternalNetworkBridge: "''"
-  #Customize bonding options if required
+  NeutronExternalNetworkBridge: "''"

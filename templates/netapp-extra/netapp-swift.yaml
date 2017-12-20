@@ -1,5 +1,5 @@
 heat_template_version: 2014-10-16
-description: Configure NetApp E-Series on controller nodes using ibft0/1 interfaces for Swift
+description: Configure NetApp SolidFire on controller nodes using ibft0 interface for Swift
 
 parameters:
   server:
@@ -28,7 +28,7 @@ resources:
              /bin/systemctl restart iscsid.service
              iscsiadm --mode discovery --type sendtargets --portal=_SFSVIP_
              iscsiadm --mode node --login 
-             mkfs.xfs /dev/sdb
+             mkfs.xfs -f /dev/sdb
              mkdir -p /srv/node/sdb
              echo "/dev/sdb /srv/node/sdb xfs noatime,nodiratime,nobarrier,logbufs=8 0 2" >> /etc/fstab  
              mount /srv/node/sdb
